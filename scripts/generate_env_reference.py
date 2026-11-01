@@ -492,6 +492,25 @@ VARIABLE_NOTES: dict[str, tuple[str, str, str]] = {
         "tools that execute code, mutate state or cause external side effects need "
         "a separate approval. Set to 0 to opt out.",
     ),
+    "ODYSSEUS_LOCAL_MCP_READ_TOOLS": (
+        "Agent loop and tool execution", USER,
+        "Security-relevant. Comma-separated exact MCP read-tool names "
+        "on configured stdio MCP servers. Only stdio servers qualify. "
+        "Declarations do not override built-in tool effects. Output remains "
+        "untrusted to prevent privilege escalation, but allows continuation to "
+        "declared write tools on the same stdio server without external taint. "
+        "Stdio transport does not guarantee network isolation. Automatic "
+        "same-store writes carry residual prompt-injection risk.",
+    ),
+    "ODYSSEUS_LOCAL_MCP_WRITE_TOOLS": (
+        "Agent loop and tool execution", USER,
+        "Security-relevant. Comma-separated exact MCP write-tool names "
+        "on configured stdio MCP servers. Only stdio servers qualify. "
+        "Declarations do not override built-in tool effects. Allowed to execute "
+        "after declared local reads on the same stdio server, but blocked once "
+        "external untrusted context enters the run. Authorization must still "
+        "originate from the trusted request grant.",
+    ),
     "ODYSSEUS_MCP_ALLOWED_COMMANDS": (
         "Agent loop and tool execution", USER,
         "Security-relevant. Comma-separated allowlist of MCP launcher basenames the "
@@ -985,6 +1004,13 @@ VARIABLE_NOTES: dict[str, tuple[str, str, str]] = {
         "Deployment and first run", INTERNAL,
         "Seconds the server waits for in-flight requests and background loops to "
         "finish during a graceful shutdown.",
+    ),
+    "ODYSSEUS_REPLAY_TOOL_HISTORY": (
+        "Agent loop and tool execution", USER,
+        "Set to 0, false, no or off to disable replay of historical tool calls "
+        "in the chat route. When enabled, Odysseus replays assistant tool_calls "
+        "and matching role:tool results from prior turns so the model does not "
+        "interpret every question as answered from memory.",
     ),
 }
 
